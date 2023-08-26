@@ -1,0 +1,59 @@
+---
+title: "final project"
+author: "Jianing"
+format: html
+editor: visual
+---
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{r}
+#| label: tbl-one
+#| tbl-cap: "Descriptive statistics"
+library(gtsummary)
+load(here::here("covid_testing.rda"))
+table1 <- tbl_summary(
+  covid_testing,
+  by = gender,
+  include = c(gender, pan_day, drive_thru_ind, orderset, demo_group, age, ct_result,
+							payor_group, result, patient_class))
+table1
+```
+
+You can add options to executable code like this
+
+```{r}
+drive_thru_f <- inline_text(table1, variable = "drive_thru_ind", 
+                         column = "female")
+drive_thru_m <- inline_text(table1, variable = "drive_thru_ind", 
+                         column = "male")
+```
+
+More female (`r drive_thru_f`) participants choose to collect specimen via a drive-thru site than male (`r drive_thru_m`) participants.
+
+```{r}
+#| label: fig-hist
+#| fig-cap: "This is a histogram of number of day after start of pandemic"
+hist(covid_testing$pan_day,main = "Histogram of day after pandemic start", xlab = "days")
+```
+
+@fig-hist contains the day after start of pandemic histogram and @tbl-one a descriptive table.
+
+```{r}
+orderset_f <- inline_text(table1, variable = "orderset", 
+                         column = "female")
+orderset_m <- inline_text(table1, variable = "orderset", 
+                         column = "male")
+payor_f <- inline_text(table1, variable = "payor_group", level="government",
+                         column = "female")
+payor_m <- inline_text(table1, variable = "payor_group", level="government",
+                         column = "male")
+```
+
+I saved the dataset from this github: https://github.com/higgi13425/medicaldata/tree/master/data. This data set is from Amrom E. Obstfeld, who de-identified data on COVID-19 testing during the year 2020 at the Children's Hospital of Pennsylvania (aka CHOP). This study is a prospective cross-sectional cohort. This data set contains data concerning testing for SARS-CoV2 via PCR as well as associated metadata. The data has been anonymized, time-shifted, and permuted.This data set contains data on SARS-CoV2 testing at a single hospital on. There are 15,524 participants (7832 female and 7692 male) were tested, from day 4 to day 107 of the COVID-19 pandemic. The dataset shows that a less proportion of female (`r orderset_f`) use order set for test order than male (`r orderset_m`). (`r payor_f`) womens'covid-testing payor is government which is more than mens'(`r payor_m`). A greater proportion of female (`r inline_text(table1, variable = "result", level="positive",column = "female")`) than male(`r inline_text(table1, variable = "result", level="positive",column = "male")`)got positive result. A greater proportion of female (`r inline_text(table1, variable = "payor_group", level="self pay",column = "female")`) than male(`r inline_text(table1, variable = "payor_group", level="self pay",column = "male")`)choose self pay the testing.
